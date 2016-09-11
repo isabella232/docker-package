@@ -1,0 +1,28 @@
+FROM ubuntu:16.04
+# FROM arm64=aarch64/ubuntu:16.04 arm=armhf/ubuntu:16.04
+RUN apt-get update && \
+    apt-get install -y git make wget kmod iptables
+ENV DAPPER_RUN_ARGS --privileged
+ENV DAPPER_OUTPUT bundles
+ENV DOCKER_VERSION v1.12.1
+RUN cd /usr/src && \
+    git clone https://github.com/docker/docker && \
+    cd docker && \
+    git checkout $DOCKER_VERSION
+
+RUN rm -f /bin/sh && ln -s /bin/bash /bin/sh
+
+ARG DAPPER_HOST_ARCH
+ENV HOST_ARCH=${DAPPER_HOST_ARCH} ARCH=${DAPPER_HOST_ARCH}
+
+ENV DOCKER_URL_amd64=https://get.docker.com/builds/Linux/x86_64/docker-1.10.3 \
+    DOCKER_URL_arm=https://github.com/rancher/docker/releases/download/v1.10.3-ros1/docker-1.10.3_arm \
+    DOCKER_URL_arm64=https://github.com/rancher/docker/releases/download/v1.10.3-ros1/docker-1.10.3_arm64 \
+    DOCKER_URL=DOCKER_URL_${ARCH}
+
+RUN wget -O - ${!DOCKER_URL} > /usr/bin/docker && chmod +x /usr/bin/docker
+
+WORKDIR /source
+VOLUME /var/lib/docker
+ENTRYPOINT ["./scripts/entry"]
+CMD ["ci"]

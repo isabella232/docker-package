@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e -x
+
+if ! docker version >/dev/null; then
+    if grep overlay /proc/filesystems; then
+        docker daemon -D -s overlay &
+    else
+        docker daemon -D -s aufs &
+    fi
+fi
+
+for i in {1..10}; do
+    if docker version >/dev/null; then
+        break
+    fi
+    sleep 1
+done
+
+docker version
+cd /usr/src/docker
+make tgz
+cp -rf bundles $OLDPWD

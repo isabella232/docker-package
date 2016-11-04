@@ -20,3 +20,7 @@ docker version
 cd /usr/src/docker
 make tgz
 cp -rf bundles $OLDPWD
+
+# Now make the tgz we use to build the os-engine image
+cd $OLDPWD
+./scripts/package

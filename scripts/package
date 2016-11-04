@@ -12,8 +12,15 @@ echo "looking at $shortversion"
 # detect arch
 fileinfo=$(file bundles/${shortversion}/binary-daemon/docker-containerd)
 echo "$fileinfo"
-if grep aarch64 <<<$fileinfo ; then
-  ARCH='arm64'
+if grep 32-bit <<<$fileinfo ; then
+  if grep ARM <<<$fileinfo ; then
+    ARCH='arm'
+  fi
+fi
+if grep 64-bit <<<$fileinfo ; then
+  if grep ARM <<<$fileinfo ; then
+    ARCH='arm64'
+  fi
 fi
 
 mkdir -p dist

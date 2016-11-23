@@ -10,6 +10,9 @@ TARGETS := $(shell ls scripts)
 $(TARGETS): .dapper
 	./.dapper $@
 
+shell-bind: .dapper
+	./.dapper -m bind -s
+
 .DEFAULT_GOAL := ci
 
 .PHONY: $(TARGETS)

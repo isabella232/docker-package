@@ -23,8 +23,10 @@ if grep 64-bit <<<$fileinfo ; then
   fi
 fi
 
-mkdir -p dist
+mkdir -p dist/docker
+cp bundles/${shortversion}/binary-client/docker* bundles/${shortversion}/binary-daemon/docker* dist/docker
+
+cd dist
 tar --exclude='*.md5' --exclude='*.sha256' --exclude="*-${shortversion}" \
-       --dereference \
-       -czvf dist/docker-${DOCKER_VERSION}_${ARCH}.tgz \
-       bundles/${shortversion}/binary-client/docker* bundles/${shortversion}/binary-daemon/docker*
+       -czvf docker-${DOCKER_VERSION}_${ARCH}.tgz \
+       docker/*

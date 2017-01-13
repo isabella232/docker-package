@@ -7,10 +7,9 @@ if [ "$DOCKER_VERSION" == "" ]; then
   exit
 fi
 
-shortversion=${DOCKER_VERSION/#v/}
-echo "looking at $shortversion"
+echo "looking at $DOCKER_VERSION"
 # detect arch
-fileinfo=$(file bundles/${shortversion}/binary-daemon/docker-containerd)
+fileinfo=$(file bundles/${DOCKER_VERSION}/binary-daemon/docker-containerd)
 echo "$fileinfo"
 if grep 32-bit <<<$fileinfo ; then
   if grep ARM <<<$fileinfo ; then
@@ -24,9 +23,9 @@ if grep 64-bit <<<$fileinfo ; then
 fi
 
 mkdir -p dist/docker
-cp bundles/${shortversion}/binary-client/docker* bundles/${shortversion}/binary-daemon/docker* dist/docker
+cp bundles/${DOCKER_VERSION}/binary-client/docker* bundles/${DOCKER_VERSION}/binary-daemon/docker* dist/docker
 
 cd dist
-tar --exclude='*.md5' --exclude='*.sha256' --exclude="*-${shortversion}" \
-       -czvf docker-${DOCKER_VERSION}_${ARCH}.tgz \
+tar --exclude='*.md5' --exclude='*.sha256' --exclude="*-${DOCKER_VERSION}" \
+       -czvf docker-v${DOCKER_VERSION}_${ARCH}.tgz \
        docker/*

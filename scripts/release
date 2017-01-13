@@ -1,3 +1,6 @@
 #!/bin/bash
 
-exec $(dirname $0)/ci
+$(dirname $0)/ci 2>&1 | tee build.log
+
+mkdir -p dist
+cp build.log dist/build.log

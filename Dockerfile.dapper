@@ -4,11 +4,20 @@ RUN apt-get update && \
     apt-get install -y git make wget kmod iptables aufs-tools file
 ENV DAPPER_RUN_ARGS --privileged
 ENV DAPPER_OUTPUT bundles dist
-ENV DOCKER_VERSION v1.12.6
+ENV DOCKER_VERSION 1.12.6
 RUN cd /usr/src && \
-    git clone https://github.com/docker/docker && \
-    cd docker && \
-    git checkout $DOCKER_VERSION
+    git clone --depth 1 --branch v$DOCKER_VERSION https://github.com/docker/docker
+
+# error: .git directory missing and DOCKER_GITCOMMIT not specified
+#  Please either build with the .git directory accessible, or specify the
+#  exact (--short) commit hash you are building using DOCKER_GITCOMMIT for
+#  future accountability in diagnosing build issues.  Thanks!
+#
+#RUN cd /usr/src \
+#    && wget https://github.com/docker/docker/archive/v${DOCKER_VERSION}.tar.gz \
+#    && tar zxvf v${DOCKER_VERSION}.tar.gz \
+#    && ls -la \
+#    && mv docker-${DOCKER_VERSION} docker
 
 RUN rm -f /bin/sh && ln -s /bin/bash /bin/sh
 
